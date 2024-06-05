@@ -1,6 +1,7 @@
 import pytest
 
 
+# Compulsory part tests
 @pytest.mark.api
 def test_user_exists(github_api):
     user = github_api.get_user("defunkt")
@@ -32,21 +33,28 @@ def test_repo_with_single_char_be_found(github_api):
     assert r["total_count"] != 0
 
 
-# Тест, що кількість emoji з GitHub = 1935
-@pytest.mark.api
+# Additional part of the Task 4 begins
+
+
+# Test that Github emojies quantity is 1935
+@pytest.mark.api_emojis_qnt
 def test_emoji_qnt(github_api):
-    r = github_api.get_emoji()
+    r = github_api.get_all_emojis()
     assert len(r) == 1935
 
 
-# Тест, що комміт існує в репозиторії користувача, якщо відомий sha комміту
+# Test that particular commit exist in repo
 @pytest.mark.api_commit
 def test_commit_exist(github_api):
-    r = github_api.get_commit_list()
-    # Присвоюємо змінній SHA комміту, який ми шукаємо
+    global owner
+    global repo
+    owner = "SergiiSiedash"
+    repo = "Prometeus_QA_Auto"
+    r = github_api.get_commit_list(owner, repo)
+
     target_sha = "4f8ffd8d01a675a0eb15fcb25b7cbe9f62405dab"
 
-    # Циклом шукаємо комміт заданним sha
+    # Loop to find particular commit index by sha
     for i in r:
         if i["sha"] == target_sha:
             global commit_sha
@@ -54,26 +62,26 @@ def test_commit_exist(github_api):
     assert commit_sha["sha"] == target_sha
 
 
-# Перевіряємо ім'я комміту
+# Commit name check
 @pytest.mark.api_commit
-def test_commit_name():
+def check_commit_name():
     assert commit_sha["commit"]["message"] == "Project Task 5 Compulsory Part Completed"
 
 
-# Перевіряємо, автор і коммітер останнього комміту - одина людина
+# Test that recent commit author's name, email and date equal to commiter ones
 @pytest.mark.api_commit
-def test_last_commit_author_equal_commiter(github_api):
-    r = github_api.get_commit_list()
-    last_commit = r[0]
+def test_recent_commit_author_equal_commiter(github_api):
+    r = github_api.get_commit_list(owner, repo)
+    recent_commit = r[0]
     assert (
-        last_commit["commit"]["author"]["name"]
-        == last_commit["commit"]["committer"]["name"]
+        recent_commit["commit"]["author"]["name"]
+        == recent_commit["commit"]["committer"]["name"]
     )
     assert (
-        last_commit["commit"]["author"]["email"]
-        == last_commit["commit"]["committer"]["email"]
+        recent_commit["commit"]["author"]["email"]
+        == recent_commit["commit"]["committer"]["email"]
     )
     assert (
-        last_commit["commit"]["author"]["date"]
-        == last_commit["commit"]["committer"]["date"]
+        recent_commit["commit"]["author"]["date"]
+        == recent_commit["commit"]["committer"]["date"]
     )
