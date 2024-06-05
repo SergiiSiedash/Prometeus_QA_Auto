@@ -15,3 +15,18 @@ class GitHub:
         body = r.json()
 
         return body
+
+    # Метод для збереження всіх доступних emoji GitHub у JSON файл
+    def get_emoji(self):
+        r = requests.get("https://api.github.com/emojis")
+        body = r.json()
+
+        return body
+
+    # Метод для отримання списку коммітів
+    def get_commit_list(self):
+        r = requests.get("https://api.github.com/repos/SergiiSiedash/Prometeus_QA_Auto/commits")
+        body = r.json()
+
+        return body
+
