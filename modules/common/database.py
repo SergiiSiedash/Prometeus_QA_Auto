@@ -1,11 +1,13 @@
 import sqlite3
 
+# Task 5 Compulsory Part
+
 
 class Database:
 
     def __init__(self) -> None:
         self.connection = sqlite3.connect(
-            r"D:\\Programming\\Prometeus\\Prometeus_QA_Auto" + r"\become_qa_auto.db"
+            r"..\\Prometeus_QA_Auto\\" + r"\become_qa_auto.db"
         )
         self.cursor = self.connection.cursor()
 
@@ -22,7 +24,7 @@ class Database:
         return record
 
     def get_user_address_by_name(self, name):
-        query = f"SELECT address, city, postalCode, country FROM customers WHERE name = '{name}'"
+        query = f"SELECT id, name, address, city, postalCode, country FROM customers WHERE name = '{name}'"
         self.cursor.execute(query)
         record = self.cursor.fetchall()
         return record
@@ -55,6 +57,49 @@ class Database:
                 FROM orders \
                 JOIN customers ON orders.customer_id = customers.id \
                 JOIN products ON orders.product_id = products.id"
+        self.cursor.execute(query)
+        record = self.cursor.fetchall()
+        return record
+
+    # Additional Part Begins
+
+    # Method trys to insert a new customer into database
+    def try_insert_new_customer(
+        self,
+        new_customer_id,
+        new_customer_name,
+        new_customer_address,
+        new_customer_city,
+        new_customer_postalCode,
+        new_customer_country,
+    ):
+        query = f"INSERT OR REPLACE INTO customers (id, name, address, city, postalCode, country) \
+                                 VALUES ({new_customer_id}, {new_customer_name}, {new_customer_address}, {new_customer_city}, {new_customer_postalCode}, {new_customer_country})"
+        self.cursor.execute(query)
+        self.connection.commit()
+
+    # Metod to update customer data
+    def update_user_data_by_id(
+        self,
+        updated_customer_name,
+        updated_customer_address,
+        updated_customer_city,
+        updated_customer_postalCode,
+        updated_customer_country,
+        customer_id_to_update,
+    ):
+        query = f"UPDATE customers SET  name = '{updated_customer_name}', \
+                                        address = '{updated_customer_address}', \
+                                        city = '{updated_customer_city}', \
+                                        postalCode = '{updated_customer_postalCode}', \
+                                        country = '{updated_customer_country}' \
+                                    WHERE id = {customer_id_to_update}"
+        self.cursor.execute(query)
+        self.connection.commit()
+
+    # Method to get user data by id
+    def get_user_data_by_id(self, customer_id):
+        query = f"SELECT id, name, address, city, postalCode, country FROM customers WHERE id = {customer_id}"
         self.cursor.execute(query)
         record = self.cursor.fetchall()
         return record

@@ -1,5 +1,7 @@
 import pytest
 from modules.api.clients.github import GitHub
+from modules.common.database import Database
+
 
 class User:
 
@@ -21,7 +23,7 @@ def user():
     user = User()
     user.create()
 
-    yield user  # Все, що знаходиться до слова yield буде виконано до тесту
+    yield user
 
     user.remove
 
@@ -31,3 +33,9 @@ def github_api():
     api = GitHub()
     yield api
 
+
+# Database tests fixture to reduce code quantuty
+@pytest.fixture
+def database():
+    db = Database()
+    yield db
