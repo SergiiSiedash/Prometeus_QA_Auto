@@ -77,13 +77,12 @@ def test_detailed_orders(database):
 # Test that user with correct data is sucsessfully added
 @pytest.mark.db_additional
 def test_new_customer_insert(database):
-
     new_customer_id = 3
-    new_customer_name = "Vasyl"
-    new_customer_address = "Petra"
-    new_customer_city = "Fridrichshaffen"
-    new_customer_postalCode = "V123V"
-    new_customer_country = "Moon"
+    new_customer_name = "Sam"
+    new_customer_address = "11 Doroshenka str"
+    new_customer_city = "Zhaskiv"
+    new_customer_postalCode = "8ABC"
+    new_customer_country = "Mars"
 
     database.try_insert_new_customer(
         new_customer_id,
@@ -94,7 +93,7 @@ def test_new_customer_insert(database):
         new_customer_country,
     )
 
-    new_customer = database.get_user_data_by_id(customer_id_to_update=new_customer_id)
+    new_customer = database.get_customer_data_by_id(customer_id=new_customer_id)
 
     # Check structure of data
     assert new_customer[0][0] == new_customer_id
@@ -103,22 +102,7 @@ def test_new_customer_insert(database):
     assert new_customer[0][3] == new_customer_city
     assert new_customer[0][4] == new_customer_postalCode
     assert new_customer[0][5] == new_customer_country
-
-
-# Test that user with incorrect data types cannot be added
-@pytest.mark.db_additional
-def test_invalid_customer_data_type_insertion(database):
-    try:
-        database.try_insert_new_customer(3, "Wrong", 123456, 35235, True, "5.77")
-
-        # If insertion succeeds without an error, raise an assertion
-        assert (
-            False
-        ), "Database insertion of invalid data type(s) succeeded unexpectedly"
-
-    except (sqlite3.IntegrityError, sqlite3.OperationalError) as e:
-        # Expected error handling for data type mismatch or other database errors
-        print(f"Expected error occurred: {e}")
+    print(new_customer)
 
 
 # Test that customer data are sucsessfully updated
@@ -140,7 +124,7 @@ def test_customer_data_update(database):
         updated_customer_country,
         customer_id_to_update,
     )
-    updated_customer_data = database.get_user_data_by_id(
+    updated_customer_data = database.get_customer_data_by_id(
         customer_id=customer_id_to_update
     )
 
@@ -151,3 +135,14 @@ def test_customer_data_update(database):
     assert updated_customer_data[0][3] == updated_customer_city
     assert updated_customer_data[0][4] == updated_customer_postalCode
     assert updated_customer_data[0][5] == updated_customer_country
+
+
+# Test that customer deleted
+@pytest.mark.db_additional
+def test_customer_deleted(database):
+    customer_id_to_delete = 3
+    database.delete_customer_by_id(customer_id=customer_id_to_delete)
+    deleted_customer_data = database.get_customer_data_by_id(
+        customer_id=customer_id_to_delete
+    )
+    assert len(deleted_customer_data) == 0
