@@ -1,9 +1,11 @@
-from modules.ui.page_objects.Additional_Part_TurkishAir.turkishair_home_page import TurkishAir
+from modules.ui.page_objects.Additional_Part_TurkishAir.turkishair_home_page import (
+    TurkishAir,
+)
 import pytest
 
 
 @pytest.mark.ui_additional
-def test_check_incorrect_username_page_object():
+def test_check_incorrect_route_page_object():
 
     turkish_air_home_page = TurkishAir()
 
@@ -11,8 +13,8 @@ def test_check_incorrect_username_page_object():
 
     turkish_air_home_page.try_to_search_flight("Earth", "Mars")
 
-    assert turkish_air_home_page.check_title("Turkish Airlines ®️ | Flying to the Most Countries")
+    # Test to compare text reliability
+    r = turkish_air_home_page.check_alert_box()
+    assert r == "Error.DepartureNotSelected"
 
-    # закриваємо браузер
-    # turkish_air_home_page.close()
-
+    turkish_air_home_page.close()

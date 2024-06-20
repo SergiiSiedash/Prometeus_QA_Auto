@@ -106,12 +106,19 @@ class Database:
         self.cursor.execute(query)
         record = self.cursor.fetchall()
         return record
-    
+
+    # Metod to determine customer ID to insert
+    def get_next_empty_raw_at_customers(self):
+        query = "SELECT MAX(id) FROM customers"
+        self.cursor.execute(query)
+        max_id = self.cursor.fetchone()[0]
+        if max_id is None:
+            return 1  # If no rows exist, start from 1
+        else:
+            return max_id + 1
+        
     # Method to delete a customer
     def delete_customer_by_id(self, customer_id):
         query = f"DELETE FROM customers WHERE id = {customer_id}"
         self.cursor.execute(query)
         self.connection.commit()
-
-
- 

@@ -1,6 +1,7 @@
 import pytest
-import sqlite3
-from sqlite3 import OperationalError
+
+# import sqlite3
+# from sqlite3 import OperationalError
 
 # Task 5 Compulsory Part
 """Parameter database was added wich refers to fixture \
@@ -23,10 +24,12 @@ def test_check_all_users(database):
 def test_check_user_sergii(database):
     user = database.get_user_address_by_name("Sergii")
 
-    assert user[0][0] == "Maydan Nezalezhnosti 1"
-    assert user[0][1] == "Kyiv"
-    assert user[0][2] == "3127"
-    assert user[0][3] == "Ukraine"
+    assert user[0][0] == 1
+    assert user[0][1] == "Sergii"
+    assert user[0][2] == "Maydan Nezalezhnosti 1"
+    assert user[0][3] == "Kyiv"
+    assert user[0][4] == "3127"
+    assert user[0][5] == "Ukraine"
 
 
 @pytest.mark.database
@@ -77,7 +80,7 @@ def test_detailed_orders(database):
 # Test that user with correct data is sucsessfully added
 @pytest.mark.db_additional
 def test_new_customer_insert(database):
-    new_customer_id = 3
+    new_customer_id = database.get_next_empty_raw_at_customers()
     new_customer_name = "Sam"
     new_customer_address = "11 Doroshenka str"
     new_customer_city = "Zhaskiv"
@@ -102,7 +105,6 @@ def test_new_customer_insert(database):
     assert new_customer[0][3] == new_customer_city
     assert new_customer[0][4] == new_customer_postalCode
     assert new_customer[0][5] == new_customer_country
-    print(new_customer)
 
 
 # Test that customer data are sucsessfully updated
@@ -135,6 +137,14 @@ def test_customer_data_update(database):
     assert updated_customer_data[0][3] == updated_customer_city
     assert updated_customer_data[0][4] == updated_customer_postalCode
     assert updated_customer_data[0][5] == updated_customer_country
+
+
+@pytest.mark.db_additional
+def test_null_values_handling(database):
+    with pytest.raises(Exception):
+        database.insert_product_with_null(
+            database.get_next_empty_raw_at_customers(), None, None, "294RE", None
+        )
 
 
 # Test that customer deleted
