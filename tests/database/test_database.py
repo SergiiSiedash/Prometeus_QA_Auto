@@ -1,7 +1,5 @@
 import pytest
-
-# import sqlite3
-# from sqlite3 import OperationalError
+import sqlite3
 
 # Task 5 Compulsory Part
 """Parameter database was added wich refers to fixture \
@@ -16,8 +14,6 @@ def test_database_connection(database):
 @pytest.mark.database
 def test_check_all_users(database):
     users = database.get_all_users()
-
-    print(users)
 
 
 @pytest.mark.database
@@ -60,7 +56,6 @@ def test_product_delete(database):
 @pytest.mark.database
 def test_detailed_orders(database):
     orders = database.get_detailed_orders()
-    print("Замовлення", orders)
 
     # Check quantity of orders equal to 1
     assert len(orders) == 1
@@ -73,8 +68,11 @@ def test_detailed_orders(database):
 
 
 # Task 5 Additional Part Begins
+
 """Additional part tests for database testing \
     Tests are marked as db_additional"""
+
+"""Customers Table Tests"""
 
 
 # Test that user with correct data is sucsessfully added
@@ -139,15 +137,7 @@ def test_customer_data_update(database):
     assert updated_customer_data[0][5] == updated_customer_country
 
 
-@pytest.mark.db_additional
-def test_null_values_handling(database):
-    with pytest.raises(Exception):
-        database.insert_product_with_null(
-            database.get_next_empty_raw_at_customers(), None, None, "294RE", None
-        )
-
-
-# Test that customer deleted
+# Test that customer has been deleted
 @pytest.mark.db_additional
 def test_customer_deleted(database):
     customer_id_to_delete = 3
@@ -156,3 +146,24 @@ def test_customer_deleted(database):
         customer_id=customer_id_to_delete
     )
     assert len(deleted_customer_data) == 0
+
+
+# Test imposibility of None values adding
+@pytest.mark.db_additional
+def test_null_values_inadmissibillity(database):
+    with pytest.raises(Exception):
+        database.insert_product_with_null(
+            database.get_next_empty_raw_at_customers(), None, None, "294RE", None
+        )
+
+
+"""Products Table Tests"""
+
+
+# Test error appears while trying to inssert unsupported data types into products
+@pytest.mark.db_additional
+def test_insert_incorrect_id_data_type(database):
+    with pytest.raises(sqlite3.OperationalError) as exc_info:
+        database.insert_product(
+            "unsupported_data_type", "supported_data_type", "supported_data_type", 123
+        )

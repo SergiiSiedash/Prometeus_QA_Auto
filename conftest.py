@@ -25,7 +25,7 @@ def user():
 
     yield user
 
-    user.remove
+    user.remove()
 
 
 @pytest.fixture
@@ -39,3 +39,5 @@ def github_api():
 def database():
     db = Database()
     yield db
+
+

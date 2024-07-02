@@ -1,14 +1,12 @@
 import sqlite3
-from sqlite3 import Error
+# from sqlite3 import Error
 
 
 # Task 5 Compulsory Part
 class Database:
 
     def __init__(self) -> None:
-        self.connection = sqlite3.connect(
-            r"..\\Prometeus_QA_Auto\\" + r"\become_qa_auto.db"
-        )
+        self.connection = sqlite3.connect(r"become_qa_auto.db")
         self.cursor = self.connection.cursor()
 
     def test_connection(self):
@@ -74,7 +72,7 @@ class Database:
         new_customer_country,
     ):
         try:
-            query = f"""INSERT OR REPLACE INTO customers (id, name, address, city, postalCode, country) \
+            query = f"""INSERT INTO customers (id, name, address, city, postalCode, country) \
                                  VALUES ({new_customer_id}, '{new_customer_name}', '{new_customer_address}', '{new_customer_city}', '{new_customer_postalCode}', '{new_customer_country}')"""
             self.cursor.execute(query)
             self.connection.commit()
@@ -116,9 +114,10 @@ class Database:
             return 1  # If no rows exist, start from 1
         else:
             return max_id + 1
-        
+
     # Method to delete a customer
     def delete_customer_by_id(self, customer_id):
         query = f"DELETE FROM customers WHERE id = {customer_id}"
         self.cursor.execute(query)
         self.connection.commit()
+

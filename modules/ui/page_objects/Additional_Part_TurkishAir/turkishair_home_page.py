@@ -1,6 +1,5 @@
 from modules.ui.page_objects.base_page import BasePage
 from selenium.webdriver.common.by import By
-import time
 
 
 # Init subclass TurkishAir
@@ -17,7 +16,7 @@ class TurkishAir(BasePage):
     # Method to find flight
     def try_to_search_flight(self, arrival, destenation):
         # Find insert field and insert airport of departure
-        arrival_elem = self.driver.find_element(By.CSS_SELECTOR, "#fromPort")
+        arrival_elem = self.driver.find_element(By, ID = "#fromPort")
         arrival_elem.send_keys(arrival)
 
         # Find insert field and insert airport of arrival
@@ -26,8 +25,8 @@ class TurkishAir(BasePage):
 
         # Find "search" button
         btn_elem = self.driver.find_element(
-            By.CSS_SELECTOR,
-            "#tab-panel-0 > div > div > div.hm__FlightBooker_bookerContent__JjWa5 > div > div.hm__RoundAndOneWayTab_buttonWrapper__v15PI > button",
+            By.XPATH,
+            "/html/body/div/div/div/div[2]/div/div/div[1]/div[2]/div/div/div/div[2]/div/div[3]/button/svg/path",
         )
 
         # Push "search" button
@@ -40,10 +39,5 @@ class TurkishAir(BasePage):
             By.CSS_SELECTOR,
             "body > div.hm__style_thy-modal-background__GgsUv.hm__style_error-modal__bF3yH > div > div > div.hm__style_error-modal-header__uklc1.hm__grid_row__uBL8m > div.hm__style_title__MRCSZ.hm__grid_col-lg-11__jxHOm",
         )
-
-        time.sleep(5)
         alert_text = alert_elem.text
         return alert_text
-        # print(alert_text)
-        # Getting text from alert-box element
-
